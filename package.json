@@ -1,0 +1,9 @@
+{
+  "name": "mayamdai",
+  "version": "1.0.0",
+  "description": "Maya client library for MayaEngine",
+  "main": "index.ts",
+  "repository": "git@github.com:mayamdinc/mayamdai.git",
+  "author": "Sunjith Sukumaran <sunjith@mayamd.ai>",
+  "license": "MIT"
+}
