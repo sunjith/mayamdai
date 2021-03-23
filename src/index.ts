@@ -35,125 +35,140 @@ interface ResolveReject {
   reject: (reason?: any) => void;
 }
 
-export const init = (
+export const connect = (
   webSocketUrl: string,
   apiKey: string,
   apiSecret: string,
-  options?: WebSocket.ClientOptions
-) => {
-  if (!ws) {
-    debug("Connecting");
-    ws = new WebSocket(webSocketUrl, options);
-
-    ws.on("error", (error) => {
-      debug("Error (%d): %O", attempts, error);
-      if (0 === ws.readyState) {
-        attempts++;
-      }
-      authenticated = false;
-      requestId = 0;
-      ws.terminate();
-      ws = null;
-      setTimeout(() => {
-        init(webSocketUrl, apiKey, apiSecret, options);
-      }, RETRY_INTERVAL);
-    });
-
-    ws.on("open", () => {
-      debug("Connected");
-      alive = true;
-      attempts = 0;
-      pingInterval = setInterval(() => ws.ping, PING_INTERVAL);
-      const auth: ApiParams = {
-        requestType: "auth",
-        requestId,
-        apiKey,
-        apiSecret,
-      };
-      requestId++;
-      ws.send(JSON.stringify(auth));
-    });
-
-    ws.on("pong", () => {
-      debug("Pong");
-      alive = true;
-    });
-
-    ws.on("close", () => {
-      clearInterval(pingInterval);
+  options?: WebSocket.ClientOptions,
+  reconnection = false
+) =>
+  new Promise((resolve, reject) => {
+    if (!ws) {
       alive = false;
       authenticated = false;
       requestId = 0;
-      debug("Disconnected");
-      ws.terminate();
-      ws = null;
-      init(webSocketUrl, apiKey, apiSecret, options);
-    });
+      debug("Connecting");
+      ws = new WebSocket(webSocketUrl, options);
 
-    ws.on("message", (payload: string) => {
-      debug("Message: %O", payload);
-      let output: ApiOutput;
-      try {
-        output = JSON.parse(payload);
-        const {
-          requestType,
-          requestId: id,
-          statusCode,
-          statusMessage,
-        } = output;
-        if ("auth" === requestType) {
-          if (200 === statusCode) {
-            authenticated = true;
-            // Send all queued requests
-            const requestTypes = Object.keys(requestQueues);
-            const typesLength = requestTypes.length;
-            for (let i = 0; i < typesLength; i++) {
-              const requestQueue = requestQueues[requestTypes[i]];
-              const ids = Object.keys(requestQueue);
-              const idsLength = ids.length;
-              for (let j = 0; j < idsLength; j++) {
-                const { params, timeout, promise } = requestQueue[ids[j]];
-                try {
-                  ws.send(JSON.stringify(params));
-                } catch (error) {
-                  debug(
-                    "Message send error (%s:%d): %O",
-                    params.requestType,
-                    params.id,
-                    error
-                  );
-                  clearTimeout(timeout);
-                  promise.reject("Message send failed: " + error.getMessage());
-                  delete requestQueue[ids[j]];
+      ws.on("error", (error) => {
+        debug("Error (%d): %O", attempts, error);
+        if (0 === ws.readyState) {
+          attempts++;
+        }
+        clearInterval(pingInterval);
+        ws.terminate();
+        ws = null;
+        if (reconnection) {
+          setTimeout(() => {
+            connect(webSocketUrl, apiKey, apiSecret, options, true);
+          }, RETRY_INTERVAL);
+        } else {
+          reject(`Error: ${error.message}`);
+        }
+      });
+
+      ws.on("open", () => {
+        debug("Connected");
+        alive = true;
+        attempts = 0;
+        pingInterval = setInterval(() => ws && ws.ping, PING_INTERVAL);
+        const auth: ApiParams = {
+          requestType: "auth",
+          requestId,
+          apiKey,
+          apiSecret,
+        };
+        requestId++;
+        ws.send(JSON.stringify(auth));
+      });
+
+      ws.on("pong", () => {
+        debug("Pong");
+        alive = true;
+      });
+
+      ws.on("close", () => {
+        clearInterval(pingInterval);
+        debug("Disconnected");
+        ws.terminate();
+        ws = null;
+        connect(webSocketUrl, apiKey, apiSecret, options, true);
+      });
+
+      ws.on("message", async (payload: string) => {
+        debug("Message: %O", payload);
+        let output: ApiOutput;
+        try {
+          output = JSON.parse(payload);
+          const {
+            requestType,
+            requestId: id,
+            statusCode,
+            statusMessage,
+          } = output;
+          if ("auth" === requestType) {
+            if (200 === statusCode) {
+              authenticated = true;
+              // Send all queued requests
+              const requestTypes = Object.keys(requestQueues);
+              const typesLength = requestTypes.length;
+              for (let i = 0; i < typesLength; i++) {
+                const requestQueue = requestQueues[requestTypes[i]];
+                const ids = Object.keys(requestQueue);
+                const idsLength = ids.length;
+                for (let j = 0; j < idsLength; j++) {
+                  const { params, timeout, promise } = requestQueue[ids[j]];
+                  try {
+                    ws.send(JSON.stringify(params));
+                  } catch (error) {
+                    debug(
+                      "Message send error (%s:%d): %O",
+                      params.requestType,
+                      params.id,
+                      error
+                    );
+                    clearTimeout(timeout);
+                    promise.reject(
+                      "Message send failed: " + error.getMessage()
+                    );
+                    delete requestQueue[ids[j]];
+                  }
                 }
               }
-            }
-          } else {
-            debug("Auth failed: %O", statusMessage);
-          }
-        } else {
-          if (!requestQueues[requestType] || !requestQueues[requestType][id]) {
-            debug("Stale response: %s, %s", requestType, id);
-          } else {
-            const { timeout, promise } = requestQueues[requestType][id];
-            clearTimeout(timeout);
-            if (200 === statusCode) {
-              promise.resolve(output);
+              resolve(statusMessage[0]);
             } else {
-              promise.reject(`Server error (${statusCode}): ${statusMessage}`);
+              debug("Auth failed: %O", statusMessage);
+              await close();
+              reject(`Authentication failed: ${statusMessage[0]}`);
             }
-            delete requestQueues[requestType][id];
+          } else {
+            if (
+              !requestQueues[requestType] ||
+              !requestQueues[requestType][id]
+            ) {
+              debug("Stale response: %s, %s", requestType, id);
+            } else {
+              const { timeout, promise } = requestQueues[requestType][id];
+              clearTimeout(timeout);
+              if (200 === statusCode) {
+                promise.resolve(output);
+              } else {
+                promise.reject(
+                  `Server error (${statusCode}): ${statusMessage.join("; ")}`
+                );
+              }
+              delete requestQueues[requestType][id];
+            }
           }
+        } catch (error) {
+          debug("Message parse error: %O", error);
         }
-      } catch (error) {
-        debug("Message parse error: %O", error);
-      }
-    });
-  }
-};
+      });
+    }
+  });
 
-export const request = async (params: ApiParams, options: RequestOptions) => {
-  const { timeout = REQUEST_TIMEOUT, clearPending = false } = options;
+export const request = async (params: ApiParams, options?: RequestOptions) => {
+  const { timeout = REQUEST_TIMEOUT, clearPending = false } = { ...options };
   const id = requestId;
   const { requestType } = params;
   params.requestId = id;
@@ -210,3 +225,43 @@ interface RequestOptions {
   timeout?: number;
   clearPending?: boolean;
 }
+
+export const close = () =>
+  new Promise((resolve, _reject) => {
+    if (ws) {
+      debug("Closing");
+      // Stop ping
+      clearInterval(pingInterval);
+      // Clear the request queues
+      const requestTypes = Object.keys(requestQueues);
+      const typesLength = requestTypes.length;
+      for (let i = 0; i < typesLength; i++) {
+        const requestQueue = requestQueues[requestTypes[i]];
+        const ids = Object.keys(requestQueue);
+        const idsLength = ids.length;
+        for (let j = 0; j < idsLength; j++) {
+          const { timeout, promise } = requestQueue[ids[j]];
+          debug(
+            "Clear timeout: (%d) %s, (%d) %s",
+            i,
+            requestTypes[i],
+            j,
+            ids[j]
+          );
+          clearTimeout(timeout);
+          promise.reject("Closing connection");
+        }
+        delete requestQueues[requestTypes[i]];
+      }
+      ws.removeAllListeners();
+      ws.on("close", () => {
+        debug("Closed");
+        ws.terminate();
+        ws = null;
+        resolve("Closed");
+      });
+      ws.close();
+    } else {
+      resolve("Closed");
+    }
+  });
