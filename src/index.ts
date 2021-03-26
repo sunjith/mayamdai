@@ -56,8 +56,10 @@ export const connect = (
           attempts++;
         }
         clearInterval(pingInterval);
-        ws.terminate();
-        ws = null;
+        if (ws) {
+          ws.terminate();
+          ws = null;
+        }
         if (reconnection) {
           setTimeout(() => {
             connect(webSocketUrl, apiKey, apiSecret, options, true);
@@ -71,7 +73,14 @@ export const connect = (
         debug("Connected");
         alive = true;
         attempts = 0;
-        pingInterval = setInterval(() => ws && ws.ping, PING_INTERVAL);
+        pingInterval = setInterval(() => {
+          if (ws) {
+            ws.ping();
+          } else {
+            debug("Trying to ping non-existent socket. Stop ping.");
+            clearInterval(pingInterval);
+          }
+        }, PING_INTERVAL);
         const auth: ApiParams = {
           requestType: "auth",
           requestId,
@@ -90,8 +99,10 @@ export const connect = (
       ws.on("close", () => {
         clearInterval(pingInterval);
         debug("Disconnected");
-        ws.terminate();
-        ws = null;
+        if (ws) {
+          ws.terminate();
+          ws = null;
+        }
         connect(webSocketUrl, apiKey, apiSecret, options, true);
       });
 
@@ -173,7 +184,7 @@ export const request = async (params: ApiParams, options?: RequestOptions) => {
   const { requestType } = params;
   params.requestId = id;
 
-  debug("Request: %s", requestType);
+  debug("Request: %s", JSON.stringify(params));
   if (clearPending && requestQueues[requestType]) {
     const ids = Object.keys(requestQueues[requestType]);
     const idsLength = ids.length;
@@ -256,8 +267,10 @@ export const close = () =>
       ws.removeAllListeners();
       ws.on("close", () => {
         debug("Closed");
-        ws.terminate();
-        ws = null;
+        if (ws) {
+          ws.terminate();
+          ws = null;
+        }
         resolve("Closed");
       });
       ws.close();

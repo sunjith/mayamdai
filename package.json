@@ -1,6 +1,6 @@
 {
   "name": "mayamdai",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Maya client library for MayaEngine",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
