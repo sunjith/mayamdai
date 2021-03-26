@@ -39,8 +39,10 @@ const connect = (webSocketUrl, apiKey, apiSecret, options, reconnection = false)
                 attempts++;
             }
             clearInterval(pingInterval);
-            ws.terminate();
-            ws = null;
+            if (ws) {
+                ws.terminate();
+                ws = null;
+            }
             if (reconnection) {
                 setTimeout(() => {
                     exports.connect(webSocketUrl, apiKey, apiSecret, options, true);
@@ -54,7 +56,15 @@ const connect = (webSocketUrl, apiKey, apiSecret, options, reconnection = false)
             debug("Connected");
             alive = true;
             attempts = 0;
-            pingInterval = setInterval(() => ws && ws.ping, PING_INTERVAL);
+            pingInterval = setInterval(() => {
+                if (ws) {
+                    ws.ping();
+                }
+                else {
+                    debug("Trying to ping non-existent socket. Stop ping.");
+                    clearInterval(pingInterval);
+                }
+            }, PING_INTERVAL);
             const auth = {
                 requestType: "auth",
                 requestId,
@@ -71,8 +81,10 @@ const connect = (webSocketUrl, apiKey, apiSecret, options, reconnection = false)
         ws.on("close", () => {
             clearInterval(pingInterval);
             debug("Disconnected");
-            ws.terminate();
-            ws = null;
+            if (ws) {
+                ws.terminate();
+                ws = null;
+            }
             exports.connect(webSocketUrl, apiKey, apiSecret, options, true);
         });
         ws.on("message", (payload) => __awaiter(void 0, void 0, void 0, function* () {
@@ -142,7 +154,7 @@ const request = (params, options) => __awaiter(void 0, void 0, void 0, function*
     const id = requestId;
     const { requestType } = params;
     params.requestId = id;
-    debug("Request: %s", requestType);
+    debug("Request: %s", JSON.stringify(params));
     if (clearPending && requestQueues[requestType]) {
         const ids = Object.keys(requestQueues[requestType]);
         const idsLength = ids.length;
@@ -211,8 +223,10 @@ const close = () => new Promise((resolve, _reject) => {
         ws.removeAllListeners();
         ws.on("close", () => {
             debug("Closed");
-            ws.terminate();
-            ws = null;
+            if (ws) {
+                ws.terminate();
+                ws = null;
+            }
             resolve("Closed");
         });
         ws.close();
