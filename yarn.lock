@@ -755,6 +755,13 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.11.0.tgz#d61f46d83b2519250e2784daf5b09479a8b41c59"
   integrity sha512-xh1Rl34h6Fi1DC2WWKfxUTVqRsNnr6LsKz2+hfwDxQJWmrx8+c7ylaqBMcHfl1U1r2dsifOvKX3LQuLNZ+XSvA==
 
+axios@^0.21.1:
+  version "0.21.1"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.1.tgz#22563481962f4d6bde9a76d516ef0e5d3c09b2b8"
+  integrity sha512-dKQiRHxGD9PPRIUNIWvZhPTPpl1rf/OxTYKsqKUDjBwYylTvV7SjSHJb9ratfyzM6wCdLCOYLzs73qpg5c4iGA==
+  dependencies:
+    follow-redirects "^1.10.0"
+
 babel-jest@^26.6.3:
   version "26.6.3"
   resolved "https://registry.yarnpkg.com/babel-jest/-/babel-jest-26.6.3.tgz#d87d25cb0037577a0c89f82e5755c5d293c01056"
@@ -1480,6 +1487,11 @@ find-up@^4.0.0, find-up@^4.1.0:
   dependencies:
     locate-path "^5.0.0"
     path-exists "^4.0.0"
+
+follow-redirects@^1.10.0:
+  version "1.13.3"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.3.tgz#e5598ad50174c1bc4e872301e82ac2cd97f90267"
+  integrity sha512-DUgl6+HDzB0iEptNQEXLx/KhTmDb8tZUHSeLqpnjpknR70H0nC2t9N73BK6fN4hOvJ84pKlIQVQ4k5FFlBedKA==
 
 for-in@^1.0.2:
   version "1.0.2"
@@ -2506,10 +2518,10 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-mayaengine-types@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/mayaengine-types/-/mayaengine-types-1.0.3.tgz#f1a3f796c5979ca274cc1edd8a87f0366e329742"
-  integrity sha512-On1KkK2KkheGumsrzQeTL+bYJV57uA1WZD9zB4HeA4OYPskEAOKgM1FuReA2yp26XmBkZJJaLDsFJk8/tJqhkA==
+mayaengine-types@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/mayaengine-types/-/mayaengine-types-1.0.5.tgz#f13e2dc439fe69971a6c39c8a208fe10a582829c"
+  integrity sha512-7+MFu1HvGzFBNVV/TzP+6GF6cmLnZrtd7sY83RJ7VH19DaxPOV5QEkxwn6uIl3DxUfMIrzT72x3wT82KztKNaw==
 
 merge-stream@^2.0.0:
   version "2.0.0"
