@@ -111,6 +111,7 @@ run();
 ## Request Types (API endpoints)
 
 1. searchSymptom - search for a symptom (e.g: for autocomplete)
+
     Params:
     - term (string) - search term
     - language (string, optional) - language code for the language in which to return the results
@@ -118,7 +119,9 @@ run();
     Output:
     - result (NamedItem[]) - top matching results
     - count (number) - number of total matching results
+
 2. searchContext - search for a context (e.g: for autocomplete)
+
     Params:
     - term (string) - search term
     - language (string, optional) - language code for the language in which to return the results
@@ -126,7 +129,9 @@ run();
     Output:
     - result (NamedItem[]) - top matching results
     - count (number) - number of total matching results
+
 3. searchMedication - search for a medication (e.g: for autocomplete)
+
     Params:
     - term (string) - search term
     - language (string, optional) - language code for the language in which to return the results
@@ -134,7 +139,9 @@ run();
     Output:
     - result (NamedItem[]) - top matching results
     - count (number) - number of total matching results
+
 4. searchSurgery - search for a surgery (e.g: for autocomplete)
+
     Params:
     - term (string) - search term
     - language (string, optional) - language code for the language in which to return the results
@@ -142,7 +149,9 @@ run();
     Output:
     - result (NamedItem[]) - top matching results
     - count (number) - number of total matching results
+
 5. searchPastMedicalHistory - search for a past medical history cause (e.g: for autocomplete)
+
     Params:
     - term (string) - search term
     - language (string, optional) - language code for the language in which to return the results
@@ -150,7 +159,9 @@ run();
     Output:
     - result (NamedItem[]) - top matching results
     - count (number) - number of total matching results
+
 6. searchCause - search for a cause (e.g: for autocomplete)
+
     Params:
     - term (string) - search term
     - language (string, optional) - language code for the language in which to return the results
@@ -158,7 +169,9 @@ run();
     Output:
     - result (NamedItem[]) - top matching results
     - count (number) - number of total matching results
+
 7. searchSymptomWithAnatomy - search symptoms that affect a specified part of the body
+
     Params:
     - anatomy (string) - name of the body part
     - language (string, optional) - language code for the language in which to return the results
@@ -167,24 +180,31 @@ run();
     - result (NamedItem[]) - top matching results
     - count (number) - number of total matching results
 8. getSymptom - get symptom data
+
     Params:
     - ids (number[]) - symptom IDs
 
     Output:
     - result (Symptom[]) - the requested symptoms data
+
 9. getQuestion - get question data
+
     Params:
     - ids (number[]) - question IDs
 
     Output:
     - result (ApiQuestion[]) - the requested questions data
+
 10. getContext - get context data
+
     Params:
     - ids (number[]) - context IDs
 
     Output:
     - result (ContextOutput[]) - the requested contexts data
+
 11. getCause - get cause data
+
     Params:
     - ids (number[]) - cause IDs
     - age (number) - if specified, filter the result based on the age
@@ -194,7 +214,9 @@ run();
 
     Output:
     - result (NamedItem[]) - the requested causes
+
 12. getAlgorithmicSymptom - get some or all symptoms which are clinical algorithms
+
     Params:
     - ids (number[], optional) - symptom IDs, get all if unspecified
     - language (string, optional) - language code for the language in which to return the results
@@ -203,13 +225,17 @@ run();
 
     Output:
     - result (AlgorithmSymptom[]) - the requested symptom data
+
 13. replaceSymptoms - get replaced symptoms if there are replacement rules
+
     Params:
     - symptoms (InputSymptom[]) - input symptoms
 
     Output:
     - result (InputSymptom[]) - input symptoms after replacements (if any)
+
 14. analyze - analyze the input and generate recommendations
+
     Params:
     - input (ApiInput) - input data
     - language (string, optional) - language code for the language in which to return the results
@@ -224,4 +250,5 @@ run();
     - triages (TriageOutput[]) - triage (except when contextOnly is true)
     - recommendation (Recommendation) - lab and physical examination recommendations (except when contextOnly is true)
     - contexts (ContextOutput[]) - Contexts applicable for the case (only when contextOnly is true)
+
 15. noop - no operation, just returns a success result. Used by the client library to verify authentication in HTTP mode.
