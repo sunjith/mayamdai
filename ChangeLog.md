@@ -1,5 +1,9 @@
 # Change Logs
 
+## 1.2.1
+
+- Update documentation for fetching algorithms by category
+
 ## 1.2.0
 
 - Partial output support added
