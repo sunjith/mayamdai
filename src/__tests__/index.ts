@@ -1,3 +1,4 @@
+import { EventEmitter } from "events";
 import { close, connect, request, requestHttp } from "../";
 import type { ApiParams } from "mayaengine-types";
 
@@ -32,8 +33,8 @@ describe("websocket", () => {
 
     it("should succeed when API key and/or secret is correct", (done) => {
       connect(WSS_URL, API_KEY, API_SECRET)
-        .then((status) => {
-          expect(status).toBe("Authenticated");
+        .then((mayamdai) => {
+          expect(mayamdai).toBeInstanceOf(EventEmitter);
           close().then(() => done());
         })
         .catch((error) => done.fail(error));
@@ -61,9 +62,14 @@ describe("websocket", () => {
   });
 
   describe("request", () => {
+    const partialCallback = jest.fn();
+
     beforeAll((done) => {
       connect(WSS_URL, API_KEY, API_SECRET)
-        .then(() => done())
+        .then((mayamdai) => {
+          mayamdai.on("partial", partialCallback);
+          done();
+        })
         .catch((error) => done.fail(error));
     });
 
@@ -77,6 +83,59 @@ describe("websocket", () => {
       expect(output.error).toBe(false);
       expect(output.result).toBeDefined();
       expect(output.result.length).toBeGreaterThan(0);
+    });
+
+    it("should get a full response for an analyze request without partial enabled", async () => {
+      const params: ApiParams = {
+        requestType: "analyze",
+        layperson: true,
+        algorithm: false,
+        excludingSex: "F",
+        input: {
+          age: 45,
+          sex: "male",
+          countryName: "US",
+          symptoms: [{ id: 7704, duration: 14, qualifiers: [87] }],
+          contexts: [12],
+          negativeContexts: [15],
+        },
+      };
+      const output = await request(params);
+      expect(output).toBeDefined();
+      expect(output.error).toBe(false);
+      expect(output.partType).not.toBeDefined();
+      expect(output.diagnoses).toBeDefined();
+      expect(output.diagnoses.length).toBeGreaterThan(0);
+      expect(output.triages).toBeDefined();
+      expect(output.triages.length).toBeGreaterThan(0);
+      await new Promise((r) => setTimeout(r, 2000)); // wait for 2 seconds
+      expect(partialCallback).not.toHaveBeenCalled();
+    });
+
+    it("should get a partial response for an analyze request with partial enabled", async () => {
+      const params: ApiParams = {
+        requestType: "analyze",
+        partial: true,
+        layperson: true,
+        algorithm: false,
+        excludingSex: "F",
+        input: {
+          age: 45,
+          sex: "male",
+          countryName: "US",
+          symptoms: [{ id: 7704, duration: 14, qualifiers: [87] }],
+          contexts: [12],
+          negativeContexts: [15],
+        },
+      };
+      const output = await request(params);
+      expect(output).toBeDefined();
+      expect(output.error).toBe(false);
+      expect(output.partType).toBe("diagnoses");
+      expect(output.diagnoses).toBeDefined();
+      expect(output.diagnoses.length).toBeGreaterThan(0);
+      await new Promise((r) => setTimeout(r, 2000)); // wait for 2 seconds
+      expect(partialCallback).toHaveBeenCalled();
     });
 
     afterAll((done) => close().then(() => done()));
@@ -149,8 +208,8 @@ describe("http", () => {
 
     it("should succeed when API key and/or secret is correct", (done) => {
       connect(HTTPS_URL, API_KEY, API_SECRET)
-        .then((status) => {
-          expect(status).toBe("Connected");
+        .then((mayamdai) => {
+          expect(mayamdai).toBeInstanceOf(EventEmitter);
           close().then(() => done());
         })
         .catch((error) => done.fail(error));

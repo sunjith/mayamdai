@@ -1,3 +1,4 @@
+import { EventEmitter } from "events";
 import nodeDebug from "debug";
 import WebSocket from "ws";
 import axios from "axios";
@@ -10,6 +11,8 @@ const PING_INTERVAL = 30000; // milliseconds
 const RETRY_INTERVAL = 10000; // milliseconds
 const REQUEST_TIMEOUT = 5000; // milliseconds
 
+const mayamdai = new EventEmitter();
+const requestQueues: RequestQueues = {};
 let alive = false;
 let authenticated = false;
 let attempts = 0;
@@ -18,7 +21,6 @@ let ws: WebSocket;
 let pingInterval: NodeJS.Timeout;
 let httpMode: boolean;
 let httpModeConfig: HttpModeConfig;
-const requestQueues: RequestQueues = {};
 
 interface HttpModeConfig {
   apiUrl: string;
@@ -50,7 +52,7 @@ export const connect: (
   apiKey: string,
   apiSecret: string,
   options?: WebSocket.ClientOptions // only for WebSocket
-) => Promise<string> = (
+) => Promise<EventEmitter> = (
   apiUrl: string,
   apiKey: string,
   apiSecret: string,
@@ -63,7 +65,7 @@ const doConnect: (
   apiSecret: string,
   options?: WebSocket.ClientOptions, // only for WebSocket
   reconnection?: boolean // only for WebSocket
-) => Promise<string> = (
+) => Promise<EventEmitter> = (
   apiUrl: string,
   apiKey: string,
   apiSecret: string,
@@ -89,7 +91,8 @@ const doConnect: (
           if (200 === response.status) {
             if (200 === statusCode) {
               requestId++;
-              resolve("Connected");
+              debug("Connected");
+              resolve(mayamdai);
             } else {
               reject(
                 `Server error (${statusCode}): ${statusMessage.join("; ")}`
@@ -113,6 +116,7 @@ const doConnect: (
       ws = new WebSocket(apiUrl, options);
 
       ws.on("error", (error) => {
+        mayamdai.emit("socketError", error);
         debug("Error (%d): %O", attempts, error);
         if (0 === ws.readyState) {
           attempts++;
@@ -132,6 +136,7 @@ const doConnect: (
       });
 
       ws.on("open", () => {
+        mayamdai.emit("socketOpen");
         debug("Connected");
         alive = true;
         attempts = 0;
@@ -159,6 +164,7 @@ const doConnect: (
       });
 
       ws.on("close", () => {
+        mayamdai.emit("socketClose");
         alive = false;
         authenticated = false;
         clearInterval(pingInterval);
@@ -177,11 +183,13 @@ const doConnect: (
           output = JSON.parse(payload);
           const {
             requestType,
+            partType,
             requestId: id,
             statusCode,
             statusMessage,
           } = output;
           if ("auth" === requestType) {
+            debug("Auth response: %s, %s", requestType, id);
             if (200 === statusCode) {
               authenticated = true;
               // Send all queued requests
@@ -210,7 +218,8 @@ const doConnect: (
                   }
                 }
               }
-              resolve(statusMessage[0]);
+              debug(statusMessage[0]);
+              resolve(mayamdai);
             } else {
               debug("Auth failed: %O", statusMessage);
               await close();
@@ -221,8 +230,22 @@ const doConnect: (
               !requestQueues[requestType] ||
               !requestQueues[requestType][id]
             ) {
-              debug("Stale response: %s, %s", requestType, id);
+              if (partType) {
+                debug(
+                  "Additional partial response: %s, %s, %s",
+                  requestType,
+                  id,
+                  partType
+                );
+                // Emit as event
+                mayamdai.emit("partial", output);
+              } else {
+                debug("Stale response: %s, %s", requestType, id);
+                // Ignore
+              }
             } else {
+              debug("Valid first response: %s, %s", requestType, id);
+              // Resolve/reject the promise
               const { timeout, promise } = requestQueues[requestType][id];
               clearTimeout(timeout);
               if (200 === statusCode) {
@@ -419,6 +442,8 @@ export const close: () => Promise<string> = () => {
           ws.terminate();
           ws = null;
         }
+        mayamdai.emit("socketClose");
+        mayamdai.removeAllListeners();
         resolve("Closed");
       });
       ws.close();

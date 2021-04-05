@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.close = exports.requestHttp = exports.request = exports.connect = void 0;
+const events_1 = require("events");
 const debug_1 = __importDefault(require("debug"));
 const ws_1 = __importDefault(require("ws"));
 const axios_1 = __importDefault(require("axios"));
@@ -20,6 +21,8 @@ const debug = debug_1.default("mayamdai");
 const PING_INTERVAL = 30000; // milliseconds
 const RETRY_INTERVAL = 10000; // milliseconds
 const REQUEST_TIMEOUT = 5000; // milliseconds
+const mayamdai = new events_1.EventEmitter();
+const requestQueues = {};
 let alive = false;
 let authenticated = false;
 let attempts = 0;
@@ -28,7 +31,6 @@ let ws;
 let pingInterval;
 let httpMode;
 let httpModeConfig;
-const requestQueues = {};
 const connect = (apiUrl, apiKey, apiSecret, options) => doConnect(apiUrl, apiKey, apiSecret, options);
 exports.connect = connect;
 const doConnect = (apiUrl, apiKey, apiSecret, options, reconnection = false) => {
@@ -47,7 +49,8 @@ const doConnect = (apiUrl, apiKey, apiSecret, options, reconnection = false) => 
                 if (200 === response.status) {
                     if (200 === statusCode) {
                         requestId++;
-                        resolve("Connected");
+                        debug("Connected");
+                        resolve(mayamdai);
                     }
                     else {
                         reject(`Server error (${statusCode}): ${statusMessage.join("; ")}`);
@@ -70,6 +73,7 @@ const doConnect = (apiUrl, apiKey, apiSecret, options, reconnection = false) => 
             debug("Connecting");
             ws = new ws_1.default(apiUrl, options);
             ws.on("error", (error) => {
+                mayamdai.emit("socketError", error);
                 debug("Error (%d): %O", attempts, error);
                 if (0 === ws.readyState) {
                     attempts++;
@@ -89,6 +93,7 @@ const doConnect = (apiUrl, apiKey, apiSecret, options, reconnection = false) => 
                 }
             });
             ws.on("open", () => {
+                mayamdai.emit("socketOpen");
                 debug("Connected");
                 alive = true;
                 attempts = 0;
@@ -115,6 +120,7 @@ const doConnect = (apiUrl, apiKey, apiSecret, options, reconnection = false) => 
                 alive = true;
             });
             ws.on("close", () => {
+                mayamdai.emit("socketClose");
                 alive = false;
                 authenticated = false;
                 clearInterval(pingInterval);
@@ -130,8 +136,9 @@ const doConnect = (apiUrl, apiKey, apiSecret, options, reconnection = false) => 
                 let output;
                 try {
                     output = JSON.parse(payload);
-                    const { requestType, requestId: id, statusCode, statusMessage, } = output;
+                    const { requestType, partType, requestId: id, statusCode, statusMessage, } = output;
                     if ("auth" === requestType) {
+                        debug("Auth response: %s, %s", requestType, id);
                         if (200 === statusCode) {
                             authenticated = true;
                             // Send all queued requests
@@ -147,14 +154,15 @@ const doConnect = (apiUrl, apiKey, apiSecret, options, reconnection = false) => 
                                         ws.send(JSON.stringify(params));
                                     }
                                     catch (error) {
-                                        debug("Message send error (%s:%d): %O", params.requestType, params.id, error);
+                                        debug("Message send error (%s:%d): %O", params.requestType, params.requestId, error);
                                         clearTimeout(timeout);
                                         promise.reject("Message send failed: " + error.getMessage());
                                         delete requestQueue[ids[j]];
                                     }
                                 }
                             }
-                            resolve(statusMessage[0]);
+                            debug(statusMessage[0]);
+                            resolve(mayamdai);
                         }
                         else {
                             debug("Auth failed: %O", statusMessage);
@@ -165,9 +173,19 @@ const doConnect = (apiUrl, apiKey, apiSecret, options, reconnection = false) => 
                     else {
                         if (!requestQueues[requestType] ||
                             !requestQueues[requestType][id]) {
-                            debug("Stale response: %s, %s", requestType, id);
+                            if (partType) {
+                                debug("Additional partial response: %s, %s, %s", requestType, id, partType);
+                                // Emit as event
+                                mayamdai.emit("partial", output);
+                            }
+                            else {
+                                debug("Stale response: %s, %s", requestType, id);
+                                // Ignore
+                            }
                         }
                         else {
+                            debug("Valid first response: %s, %s", requestType, id);
+                            // Resolve/reject the promise
                             const { timeout, promise } = requestQueues[requestType][id];
                             clearTimeout(timeout);
                             if (200 === statusCode) {
@@ -331,6 +349,8 @@ const close = () => {
                     ws.terminate();
                     ws = null;
                 }
+                mayamdai.emit("socketClose");
+                mayamdai.removeAllListeners();
                 resolve("Closed");
             });
             ws.close();

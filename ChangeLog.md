@@ -1,5 +1,13 @@
 # Change Logs
 
+## 1.2.0
+
+- Partial output support added
+
+## 1.1.1
+
+- README fix
+
 ## 1.1.0
 
 - HTTP support added
