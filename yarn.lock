@@ -2518,10 +2518,10 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-mayaengine-types@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/mayaengine-types/-/mayaengine-types-1.0.7.tgz#9ac0ed47247cbe2e0f9183341b0a93575755ab1d"
-  integrity sha512-k7uCjNz+xFxfRr1eZ+2qMp/ybUMqyJmyerrUkO2RhGOVcYAtWhyoR4HxXMh4Djnhp+qCVY/dp2ciW8xmK6jIow==
+mayaengine-types@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/mayaengine-types/-/mayaengine-types-1.1.0.tgz#4abf7c74a8d3ab4d61b82137ba5ea46d7bbbcb4c"
+  integrity sha512-EhiyDMalLyeQydqftAyh5rUoIwubuECyJ4C4RkLCQWrOGeGvvdR/OaviUr3NjoEwoDR7jc1t6mIKhtiTJD/A+A==
 
 merge-stream@^2.0.0:
   version "2.0.0"

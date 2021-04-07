@@ -1,5 +1,9 @@
 # Change Logs
 
+## 1.2.2
+
+- Multiple categories for algorithm symptoms
+
 ## 1.2.1
 
 - Update documentation for fetching algorithms by category

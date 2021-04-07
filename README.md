@@ -222,7 +222,7 @@ run();
     - language (string, optional) - language code for the language in which to return the results
     - layperson (boolean, optional) - if true, returns all clinical algorithms that are applicable to lay people only
     - preop (boolean, optional) - if true, returns all clinical algorithms for pre-operative evaluation only
-    - category (string, optional) - if specified, returns clinical algorithms of that particular category only
+    - category (string[], optional) - if specified, returns clinical algorithms of those particular categories only
 
     Output:
     - result (AlgorithmSymptom[]) - the requested symptom data
