@@ -1,6 +1,10 @@
 # Change Logs
 
-## 1.2.2
+## 1.3.1
+
+- Update mayaengine-types
+
+## 1.3.0
 
 - Multiple categories for algorithm symptoms
 
