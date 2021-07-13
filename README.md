@@ -115,6 +115,8 @@ run();
     Params:
     - term (string) - search term
     - language (string, optional) - language code for the language in which to return the results
+    - layperson (boolean, optional) - if true, return only layperson symptoms in medical terms understandable by lay people
+    - excludingSex (string, optional) - 'F' if those specific to 'female' is to be excluded, 'M' if those specific to 'male' is to be excluded
 
     Output:
     - result (NamedItem[]) - top matching results
@@ -125,6 +127,7 @@ run();
     Params:
     - term (string) - search term
     - language (string, optional) - language code for the language in which to return the results
+    - excludingSex (string, optional) - 'F' if those specific to 'female' is to be excluded, 'M' if those specific to 'male' is to be excluded
 
     Output:
     - result (NamedItem[]) - top matching results
@@ -175,14 +178,20 @@ run();
     Params:
     - anatomy (string) - name of the body part
     - language (string, optional) - language code for the language in which to return the results
+    - layperson (boolean, optional) - if true, return only layperson symptoms in medical terms understandable by lay people
 
     Output:
     - result (NamedItem[]) - top matching results
     - count (number) - number of total matching results
+
 8. getSymptom - get symptom data
 
     Params:
     - ids (number[]) - symptom IDs
+    - language (string, optional) - language code for the language in which to return the results
+    - layperson (boolean, optional) - if true, return only layperson symptoms in medical terms understandable by lay people
+    - excludingSex (string, optional) - 'F' if details specific to 'female' is to be excluded, 'M' if details specific to 'male' is to be excluded
+    - nameOnly (boolean, optional) - if true, return only the names
 
     Output:
     - result (Symptom[]) - the requested symptoms data
@@ -191,6 +200,9 @@ run();
 
     Params:
     - ids (number[]) - question IDs
+    - language (string, optional) - language code for the language in which to return the results
+    - layperson (boolean, optional) - if true, return only layperson symptoms in medical terms understandable by lay people
+    - algorithm (boolean, optional) - if true, return the results for clinical algorithms
 
     Output:
     - result (ApiQuestion[]) - the requested questions data
@@ -199,6 +211,8 @@ run();
 
     Params:
     - ids (number[]) - context IDs
+    - language (string, optional) - language code for the language in which to return the results
+    - layperson (boolean, optional) - if true, return only layperson symptoms in medical terms understandable by lay people
 
     Output:
     - result (ContextOutput[]) - the requested contexts data
@@ -207,8 +221,7 @@ run();
 
     Params:
     - ids (number[]) - cause IDs
-    - age (number) - if specified, filter the result based on the age
-    - sex (string: "male" or "female") - if specified, filter the result based on the sex
+    - profile (PatientProfile) - age and sex of the patient to filter the results
     - language (string, optional) - language code for the language in which to return the results
     - layperson (boolean, optional) - if true, return the results in medical terms understandable by lay people
 
@@ -221,8 +234,8 @@ run();
     - ids (number[], optional) - symptom IDs, get all if unspecified
     - language (string, optional) - language code for the language in which to return the results
     - layperson (boolean, optional) - if true, returns all clinical algorithms that are applicable to lay people only
-    - preop (boolean, optional) - if true, returns all clinical algorithms for pre-operative evaluation only
     - category (string[], optional) - if specified, returns clinical algorithms of those particular categories only
+    - preop (boolean, optional) - if true, returns all clinical algorithms for pre-operative evaluation only
 
     Output:
     - result (AlgorithmSymptom[]) - the requested symptom data

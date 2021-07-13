@@ -138,7 +138,9 @@ describe("websocket", () => {
       expect(partialCallback).toHaveBeenCalled();
     });
 
-    afterAll((done) => close().then(() => done()));
+    afterAll((done) => {
+      close().then(() => done());
+    });
   });
 });
 
@@ -255,6 +257,8 @@ describe("http", () => {
       expect(output.result.length).toBeGreaterThan(0);
     });
 
-    afterAll((done) => close().then(() => done()));
+    afterAll((done) => {
+      close().then(() => done());
+    });
   });
 });
