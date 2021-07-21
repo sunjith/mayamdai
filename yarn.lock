@@ -815,10 +815,10 @@
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-2.0.0.tgz#7036640b4e21cc2f259ae826ce843d277dad8cff"
   integrity sha512-RJJrrySY7A8havqpGObOB4W92QXKJo63/jFLLgpvOtsGUqbQZ9Sbgl35KMm1DjC6j7AvmmU2bIno+3IyEaemaw==
 
-"@types/ws@^7.4.6":
-  version "7.4.6"
-  resolved "https://registry.yarnpkg.com/@types/ws/-/ws-7.4.6.tgz#c4320845e43d45a7129bb32905e28781c71c1fff"
-  integrity sha512-ijZ1vzRawI7QoWnTNL8KpHixd2b2XVb9I9HAqI3triPsh1EC0xH0Eg6w2O3TKbDCgiNNlJqfrof6j4T2I+l9vw==
+"@types/ws@^7.4.7":
+  version "7.4.7"
+  resolved "https://registry.yarnpkg.com/@types/ws/-/ws-7.4.7.tgz#f7c390a36f7a0679aa69de2d501319f4f8d9b702"
+  integrity sha512-JQbbmxZTZehdc2iszGKs5oC3NFnjeay7mtAWrdt7qNtAVK0g19muApzAy4bm9byz79xa2ZnO/BOBC2R8RC5Lww==
   dependencies:
     "@types/node" "*"
 
@@ -2239,10 +2239,10 @@ makeerror@1.0.x:
   dependencies:
     tmpl "1.0.x"
 
-mayaengine-types@^1.3.4:
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/mayaengine-types/-/mayaengine-types-1.3.4.tgz#30322b14914ef15e3a3eb611fc3808a978ebba7d"
-  integrity sha512-MX8aQvblpg1mExQtEHyHVhCPoxyPwQRXXk+D2NnZa9BEsXd2lBTedtBsLJLBRhmUaWYBRW2W7THq98MmaT0M2Q==
+mayaengine-types@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/mayaengine-types/-/mayaengine-types-1.4.0.tgz#653ad644b86de9f6e18ccf0e1c84012235ef8ada"
+  integrity sha512-GrfZPwYkUJRqafzZc4xrlUDAWakeYNZ0/5ymU/QJjiT/u8EnJOylUSPEY9p7V6/jzSNNTAt/V5XGB2Hox/ZF+A==
 
 merge-stream@^2.0.0:
   version "2.0.0"
