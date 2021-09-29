@@ -7,9 +7,9 @@ const HTTPS_URL = process.env.WSS_URL || "https://mayaengine-dev.mayamd.ai";
 const API_KEY = process.env.API_KEY;
 const API_SECRET = process.env.API_SECRET;
 const MISSING_AUTH_ERROR = "Authentication failed: Missing API key or secret";
-const INVALID_AUTH_ERROR = "Authentication failed: Invalid API credentials";
+const INVALID_KEY_ERROR = "Authentication failed: Invalid API key";
 const MISSING_AUTH_HTTP_ERROR = "Server error (401): Missing API key or secret";
-const INVALID_AUTH_HTTP_ERROR = "Server error (401): Invalid API credentials";
+const INVALID_AUTH_HTTP_ERROR = "Server error (401): Invalid API key";
 
 describe("websocket", () => {
   describe("connect", () => {
@@ -26,7 +26,7 @@ describe("websocket", () => {
       connect(WSS_URL, "test", "secret")
         .then(() => done.fail("Auth succeeded"))
         .catch((error) => {
-          expect(error).toBe(INVALID_AUTH_ERROR);
+          expect(error).toBe(INVALID_KEY_ERROR);
           done();
         });
     });

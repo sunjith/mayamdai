@@ -17,7 +17,7 @@ const events_1 = require("events");
 const debug_1 = __importDefault(require("debug"));
 const ws_1 = __importDefault(require("ws"));
 const axios_1 = __importDefault(require("axios"));
-const debug = debug_1.default("mayamdai");
+const debug = (0, debug_1.default)("mayamdai");
 const PING_INTERVAL = 30000; // milliseconds
 const RETRY_INTERVAL = 10000; // milliseconds
 const REQUEST_TIMEOUT = 5000; // milliseconds
@@ -166,7 +166,7 @@ const doConnect = (apiUrl, apiKey, apiSecret, options, reconnection = false) => 
                         }
                         else {
                             debug("Auth failed: %O", statusMessage);
-                            yield exports.close();
+                            yield (0, exports.close)();
                             reject(`Authentication failed: ${statusMessage[0]}`);
                         }
                     }
@@ -207,7 +207,7 @@ const doConnect = (apiUrl, apiKey, apiSecret, options, reconnection = false) => 
 };
 const request = (params, options) => __awaiter(void 0, void 0, void 0, function* () {
     if (httpMode) {
-        return exports.requestHttp(params, httpModeConfig.apiUrl, options);
+        return (0, exports.requestHttp)(params, httpModeConfig.apiUrl, options);
     }
     const { timeout = REQUEST_TIMEOUT, cancelPending = false } = Object.assign({}, options);
     const id = requestId;

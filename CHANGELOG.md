@@ -1,5 +1,9 @@
 # Change Logs
 
+## 1.4.0
+
+- Update dependencies, mayaengine-types to version 2.0.0 with breaking change in Answer structure
+
 ## 1.3.6
 
 - Update dependencies
