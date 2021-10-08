@@ -45,8 +45,8 @@ const doConnect = (apiUrl, apiKey, apiSecret, options, reconnection = false) => 
             axios_1.default
                 .post(apiUrl, { apiKey, apiSecret, requestId, requestType: "noop" }, { timeout: REQUEST_TIMEOUT })
                 .then((response) => {
-                const { statusCode, statusMessage } = response.data;
                 if (200 === response.status) {
+                    const { statusCode, statusMessage } = response.data;
                     if (200 === statusCode) {
                         requestId++;
                         debug("Connected");
@@ -219,7 +219,7 @@ const request = (params, options) => __awaiter(void 0, void 0, void 0, function*
         const idsLength = ids.length;
         debug("Cancel pending requests: %d", idsLength);
         for (let i = 0; i < idsLength; i++) {
-            const { timeout: requestTimeout, promise: requestPromise, } = requestQueues[requestType][ids[i]];
+            const { timeout: requestTimeout, promise: requestPromise } = requestQueues[requestType][ids[i]];
             debug("Clear timeout: %d, %d", i, ids[i]);
             clearTimeout(requestTimeout);
             requestPromise.reject(`Request (${requestType}:${ids[i]}) cancelled by new request: ${id}`);

@@ -81,14 +81,14 @@ const doConnect: (
     };
     return new Promise((resolve, reject) => {
       axios
-        .post(
+        .post<ServerRequest, ServerResponse>(
           apiUrl,
           { apiKey, apiSecret, requestId, requestType: "noop" },
           { timeout: REQUEST_TIMEOUT }
         )
         .then((response) => {
-          const { statusCode, statusMessage } = response.data;
           if (200 === response.status) {
+            const { statusCode, statusMessage } = response.data;
             if (200 === statusCode) {
               requestId++;
               debug("Connected");
@@ -108,6 +108,24 @@ const doConnect: (
     });
   } else {
     httpMode = false;
+  }
+
+  interface ServerRequest {
+    apiKey: string;
+    apiSecret: string;
+    requestId: number;
+    requestType: string;
+  }
+
+  interface ServerResponse {
+    data: ServerData;
+    status: number;
+    statusText: string;
+  }
+
+  interface ServerData {
+    statusCode: number;
+    statusMessage: string[];
   }
 
   return new Promise((resolve, reject) => {
@@ -282,10 +300,8 @@ export const request = async (params: ApiParams, options?: RequestOptions) => {
     const idsLength = ids.length;
     debug("Cancel pending requests: %d", idsLength);
     for (let i = 0; i < idsLength; i++) {
-      const {
-        timeout: requestTimeout,
-        promise: requestPromise,
-      } = requestQueues[requestType][ids[i]];
+      const { timeout: requestTimeout, promise: requestPromise } =
+        requestQueues[requestType][ids[i]];
       debug("Clear timeout: %d, %d", i, ids[i]);
       clearTimeout(requestTimeout);
       requestPromise.reject(

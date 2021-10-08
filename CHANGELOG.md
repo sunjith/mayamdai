@@ -1,5 +1,9 @@
 # Change Logs
 
+## 1.5.0
+
+- Update dependencies, ws from 7.x to 8.x
+
 ## 1.4.0
 
 - Update dependencies, mayaengine-types to version 2.0.0 with breaking change in Answer structure
