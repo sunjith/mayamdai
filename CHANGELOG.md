@@ -1,5 +1,9 @@
 # Change Logs
 
+## 1.6.1
+
+- Documentation update for 'getCause'
+
 ## 1.6.0
 
 - Update dependencies, mayaengine-types
