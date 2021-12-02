@@ -1,6 +1,6 @@
 {
   "name": "mayamdai",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "Maya client library for MayaEngine",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -32,7 +32,7 @@
   "engineStrict": true,
   "dependencies": {
     "axios": "^0.24.0",
-    "ws": "^8.2.3"
+    "ws": "^8.3.0"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.5",
@@ -40,13 +40,13 @@
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
-    "@types/jest": "^27.0.2",
-    "@types/ws": "^8.2.0",
-    "jest": "^27.3.1",
-    "mayaengine-types": "^2.4.0",
+    "@types/jest": "^27.0.3",
+    "@types/ws": "^8.2.1",
+    "jest": "^27.4.3",
+    "mayaengine-types": "^2.5.0",
     "pre-commit": "^1.2.2",
     "pre-push": "^0.1.1",
     "ts-jest": "^27.0.7",
-    "typescript": "^4.4.4"
+    "typescript": "^4.5.2"
   }
 }
