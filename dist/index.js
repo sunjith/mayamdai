@@ -156,7 +156,7 @@ const doConnect = (apiUrl, apiKey, apiSecret, options, reconnection = false) => 
                                     catch (error) {
                                         debug("Message send error (%s:%d): %O", params.requestType, params.requestId, error);
                                         clearTimeout(timeout);
-                                        promise.reject("Message send failed: " + error.getMessage());
+                                        promise.reject("Message send failed: " + error);
                                         delete requestQueue[ids[j]];
                                     }
                                 }
@@ -247,7 +247,7 @@ const request = (params, options) => __awaiter(void 0, void 0, void 0, function*
             debug("Message send error (%s:%d): %O", requestType, id, error);
             process.nextTick(() => {
                 clearTimeout(requestQueues[requestType][id].timeout);
-                requestQueues[requestType][id].promise.reject("Message send failed: " + error.getMessage());
+                requestQueues[requestType][id].promise.reject("Message send failed: " + error);
                 delete requestQueues[requestType][id];
             });
         }
@@ -260,7 +260,7 @@ const request = (params, options) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.request = request;
 const requestHttp = (params, apiUrl, options) => __awaiter(void 0, void 0, void 0, function* () {
-    const { timeout = REQUEST_TIMEOUT, cancelPending = false } = Object.assign({}, options);
+    const { timeout = REQUEST_TIMEOUT, cancelPending = false } = options;
     const id = requestId;
     const { requestType } = params;
     params.requestId = id;

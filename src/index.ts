@@ -350,7 +350,7 @@ export const requestHttp = async (
   apiUrl: string,
   options?: RequestOptions
 ) => {
-  const { timeout = REQUEST_TIMEOUT, cancelPending = false } = { ...options };
+  const { timeout = REQUEST_TIMEOUT, cancelPending = false } = options;
   const id = requestId;
   const { requestType } = params;
   params.requestId = id;
