@@ -229,9 +229,7 @@ const doConnect: (
                       error
                     );
                     clearTimeout(timeout);
-                    promise.reject(
-                      "Message send failed: " + error.getMessage()
-                    );
+                    promise.reject("Message send failed: " + error);
                     delete requestQueue[ids[j]];
                   }
                 }
@@ -330,7 +328,7 @@ export const request = async (params: ApiParams, options?: RequestOptions) => {
       process.nextTick(() => {
         clearTimeout(requestQueues[requestType][id].timeout);
         requestQueues[requestType][id].promise.reject(
-          "Message send failed: " + error.getMessage()
+          "Message send failed: " + error
         );
         delete requestQueues[requestType][id];
       });

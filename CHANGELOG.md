@@ -1,5 +1,9 @@
 # Change Logs
 
+## 1.6.3
+
+- Fix error message
+
 ## 1.6.2
 
 - Update dependencies, mayaengine-types
