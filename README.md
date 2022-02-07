@@ -268,6 +268,16 @@ run();
 
 15. noop - no operation, just returns a success result. Used by the client library to verify authentication in HTTP mode.
 
+16. getNames - Get the names of items in the given language
+
+    Params:
+    - idsForNames (GetNamesInput) - IDs of items
+    - language (string, optional) - language code for the language in which to return the results
+    - layperson (boolean, optional) - if true, return the results for lay people apps
+
+    Output:
+    - names (GetNamesOutput) - names indexed by IDs
+
 ## Events
 
 Currently there are events only for the web socket connection, although connect returns an event emitter in either case.

@@ -1,5 +1,9 @@
 # Change Logs
 
+## 1.6.4
+
+- Update dependencies, mayaengine-types, documentation for getNames
+
 ## 1.6.3
 
 - Fix error message
