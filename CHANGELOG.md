@@ -1,5 +1,9 @@
 # Change Logs
 
+## 1.6.9
+
+- Update mayaengine-types
+
 ## 1.6.8
 
 - Update mayaengine-types
