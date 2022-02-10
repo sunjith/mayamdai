@@ -1,5 +1,9 @@
 # Change Logs
 
+## 1.7.0
+
+- Update dependencies. Add documentation for new APIs, 'all' field for getting full list.
+
 ## 1.6.9
 
 - Update mayaengine-types

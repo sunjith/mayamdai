@@ -192,6 +192,7 @@ run();
     - layperson (boolean, optional) - if true, return only layperson symptoms in medical terms understandable by lay people
     - excludingSex (string, optional) - 'F' if details specific to 'female' is to be excluded, 'M' if details specific to 'male' is to be excluded
     - nameOnly (boolean, optional) - if true, return only the names
+    - all (boolean, optional) - if true, return the full list (implies nameOnly)
 
     Output:
     - result (Symptom[]) - the requested symptoms data
@@ -213,6 +214,7 @@ run();
     - ids (number[]) - context IDs
     - language (string, optional) - language code for the language in which to return the results
     - layperson (boolean, optional) - if true, return only layperson symptoms in medical terms understandable by lay people
+    - all (boolean, optional) - if true, return the full list
 
     Output:
     - result (ContextOutput[]) - the requested contexts data
@@ -225,11 +227,34 @@ run();
     - language (string, optional) - language code for the language in which to return the results
     - layperson (boolean, optional) - if true, return the results in medical terms understandable by lay people
     - nameOnly (boolean, optional) - if true, return only the names
+    - all (boolean, optional) - if true, return the full list (implies nameOnly)
 
     Output:
     - result (CauseOutput[]) - the requested causes
 
-12. getAlgorithmicSymptom - get some or all symptoms which are clinical algorithms
+12. getLab - get lab data
+
+    Params:
+    - ids (number[]) - lab IDs
+    - language (string, optional) - language code for the language in which to return the results
+    - layperson (boolean, optional) - if true, return the results in medical terms understandable by lay people
+    - all (boolean, optional) - if true, return the full list
+
+    Output:
+    - result (LabOutput[]) - the requested labs
+
+13. getPhysicalExamination - get physical examination data
+
+    Params:
+    - ids (number[]) - physical examination IDs
+    - language (string, optional) - language code for the language in which to return the results
+    - layperson (boolean, optional) - if true, return the results in medical terms understandable by lay people
+    - all (boolean, optional) - if true, return the full list
+
+    Output:
+    - result (PhysicalExaminationOutput[]) - the requested physical examinations
+
+14. getAlgorithmicSymptom - get some or all symptoms which are clinical algorithms
 
     Params:
     - ids (number[], optional) - symptom IDs, get all if unspecified
@@ -241,7 +266,7 @@ run();
     Output:
     - result (AlgorithmSymptom[]) - the requested symptom data
 
-13. replaceSymptoms - get replaced symptoms if there are replacement rules
+15. replaceSymptoms - get replaced symptoms if there are replacement rules
 
     Params:
     - symptoms (InputSymptom[]) - input symptoms
@@ -249,7 +274,7 @@ run();
     Output:
     - result (InputSymptom[]) - input symptoms after replacements (if any)
 
-14. analyze - analyze the input and generate recommendations
+16. analyze - analyze the input and generate recommendations
 
     Params:
     - input (ApiInput) - input data
@@ -266,9 +291,7 @@ run();
     - recommendation (Recommendation) - lab and physical examination recommendations (except when contextOnly is true)
     - contexts (ContextOutput[]) - Contexts applicable for the case (only when contextOnly is true)
 
-15. noop - no operation, just returns a success result. Used by the client library to verify authentication in HTTP mode.
-
-16. getNames - Get the names of items in the given language
+17. getNames - Get the names of items in the given language
 
     Params:
     - idsForNames (GetNamesInput) - IDs of items
@@ -277,6 +300,8 @@ run();
 
     Output:
     - names (GetNamesOutput) - names indexed by IDs
+
+18. noop - no operation, just returns a success result. Used by the client library to verify authentication in HTTP mode.
 
 ## Events
 
