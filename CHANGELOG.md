@@ -1,8 +1,15 @@
 # Change Logs
 
+## 1.8.0
+
+- Update mayaengine-types
+- Add documentation for new API 'getSymptomCategory'
+- 'category' field in 'getSymptom' for filtering based on categories
+
 ## 1.7.0
 
-- Update dependencies. Add documentation for new APIs, 'all' field for getting full list.
+- Update dependencies
+- Add documentation for new APIs, 'all' field for getting full list.
 
 ## 1.6.9
 
@@ -26,7 +33,8 @@
 
 ## 1.6.4
 
-- Update dependencies, mayaengine-types, documentation for getNames
+- Update dependencies, mayaengine-types
+- Add documentation for getNames
 
 ## 1.6.3
 

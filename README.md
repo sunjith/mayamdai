@@ -193,6 +193,7 @@ run();
     - excludingSex (string, optional) - 'F' if details specific to 'female' is to be excluded, 'M' if details specific to 'male' is to be excluded
     - nameOnly (boolean, optional) - if true, return only the names
     - all (boolean, optional) - if true, return the full list (implies nameOnly)
+    - category (string[], optional) - array of symptom category names to filter on
 
     Output:
     - result (Symptom[]) - the requested symptoms data
@@ -301,7 +302,15 @@ run();
     Output:
     - names (GetNamesOutput) - names indexed by IDs
 
-18. noop - no operation, just returns a success result. Used by the client library to verify authentication in HTTP mode.
+18. getSymptomCategory - get symptom category names
+
+    Params:
+    - algorithm (boolean, optional) - if true, return only algorithm symptom categories
+
+    Output:
+    - result (SymptomCategory[]) - the symptom category names
+
+19. noop - no operation, just returns a success result. Used by the client library to verify authentication in HTTP mode.
 
 ## Events
 
