@@ -1,9 +1,13 @@
 # Change Logs
 
+## 1.8.1
+
+- Fix documentation
+
 ## 1.8.0
 
 - Update mayaengine-types
-- Add documentation for new API 'getSymptomCategory'
+- Add documentation for new API 'getSymptomCategories'
 - 'category' field in 'getSymptom' for filtering based on categories
 
 ## 1.7.0

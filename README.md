@@ -302,7 +302,7 @@ run();
     Output:
     - names (GetNamesOutput) - names indexed by IDs
 
-18. getSymptomCategory - get symptom category names
+18. getSymptomCategories - get symptom category names
 
     Params:
     - algorithm (boolean, optional) - if true, return only algorithm symptom categories
