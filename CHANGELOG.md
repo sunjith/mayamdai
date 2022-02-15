@@ -1,5 +1,11 @@
 # Change Logs
 
+## 1.9.0
+
+- Update mayaengine-types, dependencies
+- Add documentation for new API 'getLabCategories' and 'getPhysicalExaminationCategories'
+- 'category' field in 'getLab' and 'getPhysicalExamination' for filtering based on categories
+
 ## 1.8.1
 
 - Fix documentation

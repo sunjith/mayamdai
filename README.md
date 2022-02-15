@@ -240,6 +240,7 @@ run();
     - language (string, optional) - language code for the language in which to return the results
     - layperson (boolean, optional) - if true, return the results in medical terms understandable by lay people
     - all (boolean, optional) - if true, return the full list
+    - category (string[], optional) - array of symptom category names to filter on
 
     Output:
     - result (LabOutput[]) - the requested labs
@@ -251,6 +252,7 @@ run();
     - language (string, optional) - language code for the language in which to return the results
     - layperson (boolean, optional) - if true, return the results in medical terms understandable by lay people
     - all (boolean, optional) - if true, return the full list
+    - category (string[], optional) - array of symptom category names to filter on
 
     Output:
     - result (PhysicalExaminationOutput[]) - the requested physical examinations
@@ -308,9 +310,23 @@ run();
     - algorithm (boolean, optional) - if true, return only algorithm symptom categories
 
     Output:
-    - result (SymptomCategory[]) - the symptom category names
+    - result (string[]) - the symptom category names
 
-19. noop - no operation, just returns a success result. Used by the client library to verify authentication in HTTP mode.
+19. getLabCategories - get lab category names
+
+    Params:
+
+    Output:
+    - result (string[]) - the lab category names
+
+20. getPhysicalExaminationCategories - get physical examination category names
+
+    Params:
+
+    Output:
+    - result (string[]) - the physical examination category names
+
+21. noop - no operation, just returns a success result. Used by the client library to verify authentication in HTTP mode.
 
 ## Events
 
