@@ -224,7 +224,7 @@ run();
 
     Params:
     - ids (number[]) - cause IDs
-    - profile (PatientProfile) - age and sex of the patient to filter the results
+    - profile (PatientProfile) - age, sex and bmi of the patient to filter the results
     - language (string, optional) - language code for the language in which to return the results
     - layperson (boolean, optional) - if true, return the results in medical terms understandable by lay people
     - nameOnly (boolean, optional) - if true, return only the names
