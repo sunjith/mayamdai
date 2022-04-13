@@ -2508,10 +2508,10 @@ makeerror@1.0.x:
   dependencies:
     tmpl "1.0.x"
 
-mayaengine-types@^2.15.1:
-  version "2.15.1"
-  resolved "https://registry.yarnpkg.com/mayaengine-types/-/mayaengine-types-2.15.1.tgz#eb71dbce483bc22f61a2322c1c24bef99463aad8"
-  integrity sha512-RlT7KBLItx3uhhgN9eLPtwjtsj6KV2GLCLnrrmB/Uhf4+eI3TW5m279LOu6yQYjcBbv/aBEgq0sR77X2bSl9tQ==
+mayaengine-types@^2.15.2:
+  version "2.15.2"
+  resolved "https://registry.yarnpkg.com/mayaengine-types/-/mayaengine-types-2.15.2.tgz#7afa308262263f8140c33f8b818c2710da184341"
+  integrity sha512-SGs/K6XIF0tLAlylpdGjkEud4evv5mPoWmUBLgn2edDQasn6gWwuV/yslXn7smzUcbYn1DgB/q0UsfhtNBG/rQ==
 
 merge-stream@^2.0.0:
   version "2.0.0"
